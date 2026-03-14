@@ -121,7 +121,6 @@ class Links extends Controller
             $headers = $this->request()->getHeaders();
             $headers = array_change_key_case($headers);
             $userAgent = strtolower($headers['user-agent'][0] ?? '');
-            echo '$userAgent = ' . $userAgent . PHP_EOL;
             $client = 'unknown';
 
             foreach ($this->clientFlags as $type => $flags) {
