@@ -12,10 +12,9 @@ class Links extends Controller
 {
     public $clientFlags = [
         'clash' => ['meta', 'verge', 'flclash', 'nekobox', 'clashmetaforandroid', 'stash'],
-        'v2ray' => ['general', 'v2rayn', 'v2rayng', 'passwall', 'ssrplus', 'sagernet'],
+        'v2ray' => ['general', 'v2rayn', 'v2rayng', 'passwall', 'ssrplus', 'sagernet','shadowrocket'],
         'quantumult' => ['quantumult%20x', 'quantumult-x'],
         'loon' => ['loon'],
-        'shadowrocket' => ['shadowrocket'],
         'shadowsocks' => ['shadowsocks'],
         'surge' => ['surge'],
         'singbox' => ['sing-box', 'hiddify', 'sfm'],
@@ -122,6 +121,7 @@ class Links extends Controller
             $headers = $this->request()->getHeaders();
             $headers = array_change_key_case($headers);
             $userAgent = strtolower($headers['user-agent'][0] ?? '');
+            echo '$userAgent = ' . $userAgent . PHP_EOL;
             $client = 'unknown';
 
             foreach ($this->clientFlags as $type => $flags) {
