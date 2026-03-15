@@ -12,7 +12,7 @@ class Links extends Controller
 {
     public $clientFlags = [
         'clash' => ['meta', 'verge', 'flclash', 'nekobox', 'clashmetaforandroid', 'stash'],
-        'v2rayn' => ['general', 'v2rayn', 'v2rayng', 'passwall', 'ssrplus', 'sagernet','shadowrocket'],
+        'v2rayn' => ['general', 'v2rayn', 'v2rayng', 'passwall', 'ssrplus', 'sagernet', 'shadowrocket'],
         'quantumult' => ['quantumult%20x', 'quantumult-x'],
         'loon' => ['loon'],
         'shadowsocks' => ['shadowsocks'],
@@ -122,7 +122,7 @@ class Links extends Controller
             $headers = array_change_key_case($headers);
             $userAgent = strtolower($headers['user-agent'][0] ?? '');
             $client = 'unknown';
-
+//            echo '$userAgent = ' . $userAgent . PHP_EOL;
             foreach ($this->clientFlags as $type => $flags) {
                 foreach ($flags as $flag) {
                     if (strpos($userAgent, $flag) !== false) {
@@ -146,16 +146,12 @@ class Links extends Controller
             . '; download=' . $user->d
             . '; total=' . $user->transfer_enable
             . '; expire=' . strtotime($user->class_expire));
-        $this->response()->getSwooleResponse()->header(
-            'subscription-userinfo',
-            $value,
-            false
-        );
-        $this->response()->getSwooleResponse()->header(
-            'Subscription-Userinfo',
-            $value,
-            false
-        );
+        $this->response()->withHeader('subscription-userinfo', $value);
+//        $this->response()->getSwooleResponse()->header(
+//            'Subscription-Userinfo',
+//            $value,
+//            false
+//        );
         $this->response()->write($content);
 
         // 记录订阅日志
