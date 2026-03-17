@@ -545,6 +545,21 @@
   - DOMAIN-SUFFIX,linkedin.com,🔰国外流量
   - DOMAIN-SUFFIX,steampowered.com,🔰国外流量
 
+  - DOMAIN-SUFFIX,tiktok.com,🎵TikTok
+  - DOMAIN-SUFFIX,tiktokv.com,🎵TikTok
+  - DOMAIN-SUFFIX,tiktokcdn.com,🎵TikTok
+  - DOMAIN-SUFFIX,tiktokcdn-us.com,🎵TikTok
+  - DOMAIN-SUFFIX,ttlivecdn.com,🎵TikTok
+  - DOMAIN-SUFFIX,muscdn.com,🎵TikTok
+  - DOMAIN-SUFFIX,musical.ly,🎵TikTok
+  - DOMAIN-SUFFIX,byteoversea.com,🎵TikTok
+  - DOMAIN-SUFFIX,ibytedtos.com,🎵TikTok
+  - DOMAIN-SUFFIX,ibyteimg.com,🎵TikTok
+  - DOMAIN-SUFFIX,bytedance.com,🎵TikTok
+  - DOMAIN-SUFFIX,bytedance.net,🎵TikTok
+  - DOMAIN-SUFFIX,bytecdn.cn,🎵TikTok
+  - DOMAIN-SUFFIX,bytefcdn-oversea.com,🎵TikTok
+
   - DOMAIN-SUFFIX,aaplimg.com,🍎苹果服务
   - DOMAIN-SUFFIX,apple.co,🍎苹果服务
   - DOMAIN-SUFFIX,apple.com,🍎苹果服务
@@ -576,6 +591,41 @@
   - DOMAIN-SUFFIX,googlevideo.com,🎬Youtube
   - DOMAIN-SUFFIX,youtube.com,🎬Youtube
   - DOMAIN,youtubei.googleapis.com,🎬Youtube
+
+
+  - DOMAIN-SUFFIX,chatgpt.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,openai.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,oaistatic.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,oaiusercontent.com,🤖ChatGPT
+  - DOMAIN,chat.openai.com,🤖ChatGPT
+  - DOMAIN,api.openai.com,🤖ChatGPT
+  - DOMAIN,auth.openai.com,🤖ChatGPT
+  - DOMAIN,platform.openai.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,auth0.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,arkoselabs.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,oaistatic.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,oaiusercontent.com,🤖ChatGPT
+  - DOMAIN-SUFFIX,statsigapi.net,🤖ChatGPT
+  - DOMAIN-SUFFIX,intercom.io,🤖ChatGPT
+
+  - DOMAIN-SUFFIX,anthropic.com,🧠Claude
+  - DOMAIN-SUFFIX,claude.ai,🧠Claude
+  - DOMAIN-SUFFIX,anthropicusercontent.com,🧠Claude
+
+  - DOMAIN-SUFFIX,gemini.google.com,✨Gemini
+  - DOMAIN-SUFFIX,bard.google.com,✨Gemini
+  - DOMAIN-SUFFIX,ai.google.dev,✨Gemini
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,✨Gemini
+
+  - DOMAIN-SUFFIX,x.ai,🚀Grok
+  - DOMAIN-SUFFIX,grok.com,🚀Grok
+  - DOMAIN-SUFFIX,api.x.ai,🚀Grok
+
+  - DOMAIN-SUFFIX,perplexity.ai,🔎Perplexity
+  - DOMAIN-SUFFIX,pplx.ai,🔎Perplexity
+
+  - DOMAIN-SUFFIX,poe.com,💬Poe
+  - DOMAIN-SUFFIX,poecdn.net,💬Poe
 
   - DOMAIN-SUFFIX,netflix.com,🎬Netflix
   - DOMAIN-SUFFIX,netflix.net,🎬Netflix

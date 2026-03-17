@@ -34,15 +34,18 @@ class Node extends Models
         return ($out != '' ? $out : $explode[0]);
     }
 
-    public function getServerAndPort(): array
+    public function getSSServerAndPort(): array
     {
-        $server = '';
         $explode = explode(';', $this->server);
-        if (in_array($this->sort, [0, 10]) && isset($explode[1]) && stripos($explode[1], 'server=') !== false) {
-            $server = Tools::parse_args($explode[1])['server'];
+        if (isset($explode[2])) {
+            // 如果存在server=xxx|outside_port=12123，说明开启了中转，返回中转的域名和端口
+            $item = Tools::parse_args($explode[2]);
+            $serverInfo['server'] = $item['server'];
+            $serverInfo['port'] = $item['outside_port'];
+        } else {
+            $serverInfo['server'] = $explode[0];
+            $serverInfo['port'] = $explode[1];
         }
-        $serverInfo['server'] = $server != '' ? $server : $explode[0];
-        $serverInfo['port'] = $explode[1];
         return $serverInfo;
     }
 
@@ -117,17 +120,23 @@ class Node extends Models
 
     public function getSSItem(User $user, int $mu_port = 0, int $relay_rule_id = 0, int $is_ss = 0, bool $emoji = false): array
     {
-        $node_server = $this->getServerAndPort()['server'];
+        $serverAndPort = $this->getSSServerAndPort();
         $methodKeyLengthMap = [
             '2022-blake3-aes-128-gcm' => 16,
             '2022-blake3-aes-256-gcm' => 32,
+            '2022-blake3-chacha20-poly1305' => 32,
         ];
         $keyLength = $methodKeyLengthMap[$this->method] ?? null;
-        $userPasswd = $this->getServerKey($user->reg_date, $keyLength);
-
+        // 获取连接密码字段，用‘:’分割
+        $passwdArray = explode(':', $user->passwd);
+        if ($keyLength === 16) {
+            $userPasswd = $passwdArray[0];
+        } else {
+            $userPasswd = $passwdArray[1];
+        }
         $return_array['type'] = 'ss';
-        $return_array['address'] = $node_server;
-        $return_array['port'] = $this->getServerAndPort()['port'];
+        $return_array['address'] = $serverAndPort['server'];
+        $return_array['port'] = $serverAndPort['port'];
         $return_array['method'] = $this->method;
         $return_array['remark'] = ($emoji ? Tools::addEmoji($this->name) : $this->name);
         $return_array['passwd'] = $keyLength ? $this->getServerKey($this->create_at, $keyLength) . ':' . $userPasswd : null;
