@@ -334,32 +334,32 @@ return [
         'default' => [
             'Checks' => [],
             'General' => [
-                'port'                => 7890,
-                'socks-port'          => 7891,
-                'redir-port'          => 7892,
-                'allow-lan'           => false,
-                'mode'                => 'rule',
-                'log-level'           => 'silent',
+                'port' => 7890,
+                'socks-port' => 7891,
+                'redir-port' => 7892,
+                'allow-lan' => false,
+                'mode' => 'rule',
+                'log-level' => 'silent',
                 'external-controller' => '0.0.0.0:9090',
-                'secret'              => ''
+                'secret' => ''
             ],
             'DNS' => [
-                'enable'              => true,
-                'ipv6'                => false,
-                'listen'              => '0.0.0.0:53',
-                'enhanced-mode'       => 'fake-ip',
-                'fake-ip-range'       => '198.18.0.1/16',
-                'nameserver'=>[
+                'enable' => true,
+                'ipv6' => false,
+                'listen' => '0.0.0.0:53',
+                'enhanced-mode' => 'fake-ip',
+                'fake-ip-range' => '198.18.0.1/16',
+                'nameserver' => [
                     '114.114.114.114',
                     'tcp://223.5.5.5'
                 ],
-                'fallback'=>[
+                'fallback' => [
                     'tls://223.5.5.5:853',
                     'https://223.5.5.5/dns-query'
                 ],
-                'fallback-filter'=>[
-                    'geoip'=> true,
-                    'ipcidr'=>[
+                'fallback-filter' => [
+                    'geoip' => true,
+                    'ipcidr' => [
                         '240.0.0.0/4'
                     ]
                 ]
@@ -384,6 +384,76 @@ return [
                             '🔰国外流量',
                             '🚀直接连接'
                         ]
+                    ]
+                ],
+                [
+                    'name' => '🤖ChatGPT',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '✨Gemini',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '🚀Grok',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '🧠Claude',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '🔎Perplexity',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '💬Poe',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
+                    ]
+                ],
+                [
+                    'name' => '🎵TikTok',
+                    'type' => 'select',
+                    'content' => [
+                        'left-proxies' => [
+                            '🔰国外流量'
+                        ],
+                        'regex' => '(.*)',
                     ]
                 ],
                 [
