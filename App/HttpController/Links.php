@@ -156,7 +156,10 @@ class Links extends Controller
 
         // 记录订阅日志
         if ($config->getConf('SUB.Log') === true) {
-            $user->addSubLog($subscribe_type, $this->getRemoteIP(), $this->request()->getHeader('user-agent'));
+            $headers = $this->request()->getHeaders();
+            $headers = array_change_key_case($headers);
+            $userAgent = strtolower($headers['user-agent'][0] ?? '');
+            $user->addSubLog($subscribe_type, $this->getRemoteIP(), $userAgent);
         }
 
         return $this->response()->end();
