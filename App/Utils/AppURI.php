@@ -429,7 +429,7 @@ class AppURI
                 } else if ($item['security'] == 'reality') {
                     $return['tls'] = true;
                     $return['servername'] = $item['sni'];
-                    $return['client-fingerprint'] = Tools::getRandFingerprint();
+                    $return['fp'] = Tools::getRandFingerprint();
                     $return['reality-opts'] = [
                         'public-key' => $item['pbk'],
                         'short-id' => null
