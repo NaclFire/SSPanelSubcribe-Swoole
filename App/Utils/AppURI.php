@@ -100,10 +100,7 @@ class AppURI
                 break;
             case 'ss':
                 $personal_info = $item['method'] . ':' . $item['passwd'];
-                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'];
-                $return .= (Config::getInstance()->getConf('SUB.add_appName_to_ss_uri') === true
-                    ? '#' . rawurlencode(Config::getInstance()->getConf('appName') . ' - ' . $item['remark'])
-                    : '#' . rawurlencode($item['remark']));
+                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . '#' . rawurlencode($item['remark']);
                 break;
         }
         return $return;
