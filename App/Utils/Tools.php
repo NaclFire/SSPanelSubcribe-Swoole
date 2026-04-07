@@ -393,7 +393,7 @@ class Tools
         return $item;
     }
 
-    public static function vl2Array($node,$method)
+    public static function vl2Array($node, $method)
     {
         $server = explode(';', $node);
         $item['add'] = $server[0];
@@ -416,7 +416,7 @@ class Tools
             $item['port'] = (int)$item['outside_port'];
             unset($item['outside_port']);
         }
-        $methodData = json_decode($method,true);
+        $methodData = json_decode($method, true);
         $destExplode = explode(':', $methodData['dest']);
         $item['sni'] = $destExplode[0];
         $item['pbk'] = $methodData['public_key'];
@@ -740,8 +740,10 @@ class Tools
         }
         return round($value, 2) . 'B';
     }
-    public static function getRandFingerprint() {
+
+    public static function getRandFingerprint()
+    {
         $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', 'qq'];
-        return Arr::random($fingerprints);
+        return $fingerprints[array_rand($fingerprints)];;
     }
 }
