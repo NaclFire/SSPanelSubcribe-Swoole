@@ -93,6 +93,7 @@ class AppURI
                     'pbk' => $item['pbk'],
                     'sni' => $item['sni'],
                     'servername' => $item['servername'],
+                    'fp' => Tools::getRandFingerprint()
                 ];
                 $result = http_build_query($node);
                 $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . urlencode($item['remark']));
