@@ -100,7 +100,11 @@ class AppURI
                 break;
             case 'ss':
                 $personal_info = $item['method'] . ':' . $item['passwd'];
-                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . '#' . rawurlencode($item['remark']);
+                if (isset($item['obfs'])) {
+                    $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
+                }
+                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . rawurlencode($item['plugin']) . '#' . rawurlencode($item['remark']);
+
                 break;
         }
         return $return;
@@ -323,34 +327,15 @@ class AppURI
                     'password' => $item['passwd'],
                     'udp' => true
                 ];
-                if (isset($item['obfs']) && $item['obfs'] != 'plain') {
-                    switch ($item['obfs']) {
-                        case 'simple_obfs_http':
-                            $return['plugin'] = 'obfs';
-                            $return['plugin-opts']['mode'] = 'http';
-                            break;
-                        case 'simple_obfs_tls':
-                            $return['plugin'] = 'obfs';
-                            $return['plugin-opts']['mode'] = 'tls';
-                            break;
-                        case 'v2ray':
-                            $return['plugin'] = 'v2ray-plugin';
-                            $return['plugin-opts']['mode'] = 'websocket';
-                            if ($item['tls'] == 'tls') {
-                                $return['plugin-opts']['tls'] = true;
-                                if ($item['verify_cert'] == false) {
-                                    $return['plugin-opts']['skip-cert-verify'] = true;
-                                }
-                            }
-                            $return['plugin-opts']['host'] = $item['host'];
-                            $return['plugin-opts']['path'] = $item['path'];
-                            break;
-                    }
-                    if ($item['obfs'] != 'v2ray') {
-                        if ($item['obfs_param'] != '') {
-                            $return['plugin-opts']['host'] = $item['obfs_param'];
-                        } else {
-                            $return['plugin-opts']['host'] = 'windowsupdate.windows.com';
+                if (isset($item['obfs'])) {
+                    $return['plugin'] = 'obfs';
+                    $return['plugin-opts']['mode'] = 'http';
+                    $obfs = explode(';', $item['obfs']);
+                    foreach ($obfs as $obf) {
+                        if (strpos($obf, 'obfs-host') !== false) {
+                            $return['plugin-opts']['host'] = explode('=', $obf)[1];
+                        } else if (strpos($obf, 'path') !== false) {
+                            $return['plugin-opts']['path'] = explode('=', $obf)[1];
                         }
                     }
                 }

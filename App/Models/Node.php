@@ -139,6 +139,7 @@ class Node extends Models
         $return_array['port'] = $serverAndPort['port'];
         $return_array['method'] = $this->method;
         $return_array['remark'] = ($emoji ? Tools::addEmoji($this->name) : $this->name);
+        $return_array['obfs'] = $this->custom_obfs;
         $return_array['passwd'] = $keyLength ? $this->getServerKey($this->create_at, $keyLength) . ':' . $userPasswd : null;
         return $return_array;
     }
