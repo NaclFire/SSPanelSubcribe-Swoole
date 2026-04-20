@@ -62,7 +62,7 @@ class AppURI
         if (!empty($item['obfs'])) {
             $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
         }
-        $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . rawurlencode($item['plugin']) . '#' . rawurlencode($item['remark']);
+        $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . $item['plugin'] . '#' . rawurlencode($item['remark']);
         return $return;
     }
 
@@ -110,13 +110,7 @@ class AppURI
                 $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . urlencode($item['remark']));
                 break;
             case 'ss':
-                printf("getV2RayNURI:ss");
-                $personal_info = $item['method'] . ':' . $item['passwd'];
-                if (!empty($item['obfs'])) {
-                    $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
-                }
-                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . rawurlencode($item['plugin']) . '#' . rawurlencode($item['remark']);
-
+                $return = self::getSSURI($item);
                 break;
         }
         return $return;
