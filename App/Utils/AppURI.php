@@ -60,7 +60,7 @@ class AppURI
     {
         $personal_info = $item['method'] . ':' . $item['passwd'];
         if (!empty($item['obfs'])) {
-            $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
+            $item['plugin'] = '?plugin=obfs-local' . ';' . rawurlencode($item['obfs']);
         }
         $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . $item['plugin'] . '#' . rawurlencode($item['remark']);
         return $return;
@@ -107,7 +107,7 @@ class AppURI
                     'fp' => Tools::getRandFingerprint()
                 ];
                 $result = http_build_query($node);
-                $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . urlencode($item['remark']));
+                $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . rawurlencode($item['remark']));
                 break;
             case 'ss':
                 $return = self::getSSURI($item);
