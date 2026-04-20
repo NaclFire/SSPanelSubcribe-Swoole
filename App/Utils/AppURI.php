@@ -327,7 +327,7 @@ class AppURI
                     'password' => $item['passwd'],
                     'udp' => true
                 ];
-                if (isset($item['obfs'])) {
+                if (!empty($item['obfs'])) {
                     $return['plugin'] = 'obfs';
                     $return['plugin-opts']['mode'] = 'http';
                     $obfs = explode(';', $item['obfs']);
