@@ -51,19 +51,30 @@ class AppURI
         return $ssurl;
     }
 
+    /**
+     * @param array $item
+     * @return string
+     * SS节点的方法
+     */
     public static function getSSURI(array $item)
     {
         $personal_info = $item['method'] . ':' . $item['passwd'];
-        $ssurl = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'];
-        $ssurl .= (Config::getInstance()->getConf('SUB.add_appName_to_ss_uri') === true
-            ? '#' . rawurlencode(Config::getInstance()->getConf('appName') . ' - ' . $item['remark'])
-            : '#' . rawurlencode($item['remark']));
-        return $ssurl;
+        if (!empty($item['obfs'])) {
+            $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
+        }
+        $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . rawurlencode($item['plugin']) . '#' . rawurlencode($item['remark']);
+        return $return;
     }
 
+    /**
+     * @param array $item
+     * @return string|null
+     * Vmess和VLESS的方法
+     */
     public static function getV2RayNURI(array $item)
     {
         $return = null;
+        printf("getV2RayNURI:type = " . $item['type'] . PHP_EOL);
         switch ($item['type']) {
             case 'vmess':
                 $node = [
@@ -99,6 +110,7 @@ class AppURI
                 $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . urlencode($item['remark']));
                 break;
             case 'ss':
+                printf("getV2RayNURI:ss");
                 $personal_info = $item['method'] . ':' . $item['passwd'];
                 if (!empty($item['obfs'])) {
                     $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
@@ -305,6 +317,12 @@ class AppURI
         return $return;
     }
 
+    /**
+     * @param array $item
+     * @param bool $ssr_support
+     * @return array|null
+     * clash的方法
+     */
     public static function getClashURI(array $item, bool $ssr_support = false)
     {
         $return = null;
