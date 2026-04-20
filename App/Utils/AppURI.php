@@ -60,7 +60,14 @@ class AppURI
     {
         $personal_info = $item['method'] . ':' . $item['passwd'];
         if (!empty($item['obfs'])) {
-            $item['plugin'] = '?plugin=obfs-local' . ';' . rawurlencode($item['obfs']);
+            $obfs = explode(';', $item['obfs']);
+            $item['plugin'] = '?plugin=obfs-local';
+            foreach ($obfs as $obf) {
+                if (strpos($obf, 'path') !== false) {
+                    $obf = str_replace('path', 'obfs-uri', $obf);
+                }
+                $item['plugin'] .= ';' . rawurlencode($obf);
+            }
         }
         $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . $item['plugin'] . '#' . rawurlencode($item['remark']);
         return $return;
@@ -74,7 +81,6 @@ class AppURI
     public static function getV2RayNURI(array $item)
     {
         $return = null;
-        printf("getV2RayNURI:type = " . $item['type'] . PHP_EOL);
         switch ($item['type']) {
             case 'vmess':
                 $node = [
