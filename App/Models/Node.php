@@ -41,10 +41,10 @@ class Node extends Models
             // 如果存在server=xxx|outside_port=12123，说明开启了中转，返回中转的域名和端口
             $item = Tools::parse_args($explode[2]);
             $serverInfo['server'] = $item['server'];
-            $serverInfo['port'] = $item['outside_port'];
+            $serverInfo['port'] = (int)$item['outside_port'];
         } else {
             $serverInfo['server'] = $explode[0];
-            $serverInfo['port'] = $explode[1];
+            $serverInfo['port'] = (int)$explode[1];
         }
         return $serverInfo;
     }
