@@ -116,17 +116,17 @@ class User extends Models
         $emoji = ($Rule['emoji'] ?? false);
         $return_array = [];
         foreach ($nodes as $node) {
-            if (in_array($node->sort, [0, 11, 12])) {
-                $node_class = [
-                    0 => 'getSSItem',               // SS
-                    11 => 'getV2RayItem',           // V2Ray
-                    12 => 'getVlessItem',           // V2Ray
-                ];
-                $class = $node_class[$node->sort];
-                $item = $node->$class($this, 0, 0, 0, $emoji);
-                if ($item != null) {
-                    $return_array[] = $item;
-                }
+            $node_class = [
+                0 => 'getSSItem',               // SS
+                2 => 'getTUICItem',             // TUIC
+                11 => 'getV2RayItem',           // V2Ray
+                12 => 'getVlessItem',           // V2Ray
+            ];
+            $class = $node_class[$node->sort];
+            $item = $node->$class($this, 0, 0, 0, $emoji);
+//            printf('item_type = ' . $item['type'] . PHP_EOL);
+            if ($item != null) {
+                $return_array[] = $item;
             }
         }
         return $return_array;
@@ -292,46 +292,6 @@ class User extends Models
         return $return_array;
     }
 
-    /**
-     * 获取全部节点 Url
-     *
-     * ```
-     *  $Rule = [
-     *      'type'    => 'ss | ssr | vmess',
-     *      'emoji'   => false,
-     *      'is_mu'   => 1,
-     *      'content' => [
-     *          'noclass' => [0, 1, 2],
-     *          'class'   => [0, 1, 2],
-     *          'regex'   => '.*香港.*HKBN.*',
-     *      ]
-     *  ]
-     * ```
-     *
-     * @param array $Rule 节点筛选规则
-     */
-    public function get_NewAllUrl(array $Rule): string
-    {
-        $return_url = '';
-        if (strtotime($this->expire_in) < time()) {
-            return $return_url;
-        }
-        $items = $this->getNew_AllItems($Rule);
-        foreach ($items as $item) {
-            if ($item['type'] == 'vmess' || $item['type'] == 'vless') {
-                $out = Subcribe::getListItem($item, 'v2rayn');
-            } else if ($item['type'] == 'ss') {
-                $out = Subcribe::getListItem($item, 'ss');
-            } else {
-                $out = Subcribe::getListItem($item, $Rule['type']);
-            }
-            if ($out !== null) {
-                $return_url .= $out . PHP_EOL;
-            }
-        }
-        return $return_url;
-    }
-
     public function getAllUrl(array $Rule): string
     {
         $return_url = '';
@@ -345,6 +305,8 @@ class User extends Models
                 $out = Subcribe::getListItem($item, 'v2rayn');
             } else if ($item['type'] == 'ss') {
                 $out = Subcribe::getListItem($item, 'ss');
+            } else if ($item['type'] == 'tuic') {
+                $out = Subcribe::getListItem($item, 'tuic');
             }
             if ($out !== null) {
                 $return_url .= $out . PHP_EOL;
