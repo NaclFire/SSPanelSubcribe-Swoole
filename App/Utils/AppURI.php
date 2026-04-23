@@ -80,7 +80,7 @@ class AppURI
             . '&insecure=0'
             . '&uuid=' . $item['uuid']
             . '&password=' . $item['password']
-            . rawurlencode($item['remark']);
+            . '#' . rawurlencode($item['remark']);
 //        printf('getTUICURI = ' . $return . PHP_EOL);
         return $return;
     }
