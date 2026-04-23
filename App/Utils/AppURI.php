@@ -81,7 +81,7 @@ class AppURI
             . '&uuid=' . $item['uuid']
             . '&password=' . $item['password']
             . '&udp_relay_mode=' . $item['udp-relay-mode']
-            . '&congestion_control=' . $item['congestion-controlle']
+            . '&congestion_control=' . $item['congestion-controller']
             . '#' . rawurlencode($item['name']);
 //        printf('getTUICURI = ' . $return . PHP_EOL);
         return $return;
