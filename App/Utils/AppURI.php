@@ -80,6 +80,8 @@ class AppURI
             . '&insecure=0'
             . '&uuid=' . $item['uuid']
             . '&password=' . $item['password']
+            . '&udp_relay_mode=quic'
+            . '&congestion_control=' . $item['congestion-controlle']
             . '#' . rawurlencode($item['name']);
 //        printf('getTUICURI = ' . $return . PHP_EOL);
         return $return;
