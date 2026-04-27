@@ -118,6 +118,7 @@ class User extends Models
         foreach ($nodes as $node) {
             $node_class = [
                 0 => 'getSSItem',               // SS
+                1 => 'getAnyTLSItem',               // SS
                 2 => 'getTUICItem',             // TUIC
                 11 => 'getV2RayItem',           // V2Ray
                 12 => 'getVlessItem',           // V2Ray
@@ -307,6 +308,8 @@ class User extends Models
                 $out = Subcribe::getListItem($item, 'ss');
             } else if ($item['type'] == 'tuic') {
                 $out = Subcribe::getListItem($item, 'tuic');
+            } else if ($item['type'] == 'anytls') {
+                $out = Subcribe::getListItem($item, 'anytls');
             }
             if ($out !== null) {
                 $return_url .= $out . PHP_EOL;

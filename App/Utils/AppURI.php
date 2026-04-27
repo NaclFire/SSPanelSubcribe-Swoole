@@ -87,6 +87,12 @@ class AppURI
         return $return;
     }
 
+    public static function getAnyTLSURI(array $item)
+    {
+        $return = 'anytls://' . $item['uuid'] . '@' . $item['server'] . ':' . $item['port'] . '?sni=' . $item['server'] . '&insecure=0' . '#' . rawurlencode($item['name']);
+        return $return;
+    }
+
     /**
      * @param array $item
      * @return string|null
@@ -246,13 +252,15 @@ class AppURI
                     ];
                 }
                 break;
-            case 'trojan':
+            case 'anytls':
                 $return = [
-                    'name' => $item['remark'],
-                    'type' => 'trojan',
-                    'server' => $item['address'],
+                    'name' => $item['name'],
+                    'type' => 'anytls',
+                    'server' => $item['server'],
                     'port' => $item['port'],
-                    'password' => $item['passwd']
+                    'password' => $item['uuid'],
+                    'udp' => true,
+                    'sni' => $item['server']
                 ];
                 break;
         }

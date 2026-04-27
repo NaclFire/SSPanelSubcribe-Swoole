@@ -107,6 +107,9 @@ class Subcribe
             case 'tuic':
                 $return = AppURI::getTUICURI($item);
                 break;
+            case 'anytls':
+                $return = AppURI::getAnyTLSURI($item);
+                break;
         }
         return $return;
     }

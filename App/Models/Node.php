@@ -166,6 +166,17 @@ class Node extends Models
         return $return_array;
     }
 
+    public function getAnyTLSItem(User $user, int $mu_port = 0, int $relay_rule_id = 0, int $is_ss = 0, bool $emoji = false):array
+    {
+        $explode = explode(';', $this->server);
+        $return_array['type'] = 'anytls';
+        $return_array['server'] = $explode[0];
+        $return_array['port'] = (int)$explode[1];
+        $return_array['name'] = $this->name;
+        $return_array['uuid'] = $user->uuid;
+        return $return_array;
+    }
+
     public function getServerKey($timestamp, $length)
     {
         return base64_encode(substr(md5($timestamp), 0, $length));
