@@ -613,9 +613,20 @@
   - DOMAIN-SUFFIX,anthropicusercontent.com,🧠Claude
 
   - DOMAIN-SUFFIX,gemini.google.com,✨Gemini
+  - DOMAIN-SUFFIX,gemini.gstatic.com,✨Gemini
   - DOMAIN-SUFFIX,bard.google.com,✨Gemini
   - DOMAIN-SUFFIX,ai.google.dev,✨Gemini
   - DOMAIN-SUFFIX,generativelanguage.googleapis.com,✨Gemini
+  - DOMAIN-SUFFIX,generativeai.google,✨Gemini
+  - DOMAIN-SUFFIX,deepmind.google,✨Gemini
+  - DOMAIN-SUFFIX,deepmind.com,✨Gemini
+  - DOMAIN-SUFFIX,alkaliminer-pa.googleapis.com,✨Gemini
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,✨Gemini
+  - DOMAIN-SUFFIX,aistudio.google.com,✨Gemini
+  - DOMAIN-SUFFIX,makersuite.google.com,✨Gemini
+  - DOMAIN-SUFFIX,colab.google,✨Gemini
+  - DOMAIN-SUFFIX,colab.research.google.com,✨Gemini
+  - DOMAIN-SUFFIX,ia.google.com,✨Gemini
 
   - DOMAIN-SUFFIX,x.ai,🚀Grok
   - DOMAIN-SUFFIX,grok.com,🚀Grok
