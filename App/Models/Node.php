@@ -41,10 +41,10 @@ class Node extends Models
             // 如果存在server=xxx|outside_port=12123，说明开启了中转，返回中转的域名和端口
             $item = Tools::parse_args($explode[2]);
             $serverInfo['server'] = $item['server'];
-            $serverInfo['port'] = $item['outside_port'];
+            $serverInfo['port'] = (int)$item['outside_port'];
         } else {
             $serverInfo['server'] = $explode[0];
-            $serverInfo['port'] = $explode[1];
+            $serverInfo['port'] = (int)$explode[1];
         }
         return $serverInfo;
     }
@@ -141,6 +141,39 @@ class Node extends Models
         $return_array['remark'] = ($emoji ? Tools::addEmoji($this->name) : $this->name);
         $return_array['obfs'] = $this->custom_obfs;
         $return_array['passwd'] = $keyLength ? $this->getServerKey($this->create_at, $keyLength) . ':' . $userPasswd : null;
+        return $return_array;
+    }
+
+    public function getTUICItem(User $user, int $mu_port = 0, int $relay_rule_id = 0, int $is_ss = 0, bool $emoji = false): array
+    {
+//        printf('getTUICItem' . PHP_EOL);
+        $explode = explode(';', $this->server);
+        $return_array['type'] = 'tuic';
+        $return_array['server'] = $explode[0];
+        $return_array['port'] = (int)$explode[1];
+        $return_array['name'] = $this->name;
+        $return_array['uuid'] = $user->uuid;
+        $passwdArray = explode(':', $user->passwd);
+        if ($this->method === '2022-blake3-aes-128-gcm') {
+            $password = $passwdArray[0];
+        } else {
+            $password = $passwdArray[1];
+        }
+        $return_array['password'] = $password;
+        $return_array['congestion-controller'] = 'bbr';
+        $return_array['udp-relay-mode'] = 'quic';
+        $return_array['skip-cert-verify'] = 'false';
+        return $return_array;
+    }
+
+    public function getAnyTLSItem(User $user, int $mu_port = 0, int $relay_rule_id = 0, int $is_ss = 0, bool $emoji = false):array
+    {
+        $explode = explode(';', $this->server);
+        $return_array['type'] = 'anytls';
+        $return_array['server'] = $explode[0];
+        $return_array['port'] = (int)$explode[1];
+        $return_array['name'] = $this->name;
+        $return_array['uuid'] = $user->uuid;
         return $return_array;
     }
 

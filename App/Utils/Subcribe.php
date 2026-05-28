@@ -104,6 +104,12 @@ class Subcribe
             case 'shadowrocket':
                 $return = AppURI::getShadowrocketURI($item);
                 break;
+            case 'tuic':
+                $return = AppURI::getTUICURI($item);
+                break;
+            case 'anytls':
+                $return = AppURI::getAnyTLSURI($item);
+                break;
         }
         return $return;
     }
@@ -403,6 +409,7 @@ class Subcribe
      */
     public static function getClash(User $user, int $clash, array $opts, array $Rule): string
     {
+//        printf('getClash' . PHP_EOL);
         $subInfo = self::getSubinfo($user, $clash);
         $userapiUrl = $subInfo['clash'];
         $ssr_support = ($clash == 2 ? true : false);

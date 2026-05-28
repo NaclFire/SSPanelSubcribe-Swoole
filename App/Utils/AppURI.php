@@ -51,16 +51,53 @@ class AppURI
         return $ssurl;
     }
 
+    /**
+     * @param array $item
+     * @return string
+     * SS节点的方法
+     */
     public static function getSSURI(array $item)
     {
         $personal_info = $item['method'] . ':' . $item['passwd'];
-        $ssurl = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'];
-        $ssurl .= (Config::getInstance()->getConf('SUB.add_appName_to_ss_uri') === true
-            ? '#' . rawurlencode(Config::getInstance()->getConf('appName') . ' - ' . $item['remark'])
-            : '#' . rawurlencode($item['remark']));
-        return $ssurl;
+        if (!empty($item['obfs'])) {
+            $obfs = explode(';', $item['obfs']);
+            $item['plugin'] = '?plugin=obfs-local';
+            foreach ($obfs as $obf) {
+                if (strpos($obf, 'path') !== false) {
+                    $obf = str_replace('path', 'obfs-uri', $obf);
+                }
+                $item['plugin'] .= ';' . rawurlencode($obf);
+            }
+        }
+        $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . $item['plugin'] . '#' . rawurlencode($item['remark']);
+        return $return;
     }
 
+    public static function getTUICURI(array $item)
+    {
+        $return = 'tuic://' . $item['server'] . ':' . $item['port']
+            . '?alpn' . rawurlencode('[0]') . '=h3'
+            . '&insecure=0'
+            . '&uuid=' . $item['uuid']
+            . '&password=' . $item['password']
+            . '&udp_relay_mode=' . $item['udp-relay-mode']
+            . '&congestion_control=' . $item['congestion-controller']
+            . '#' . rawurlencode($item['name']);
+//        printf('getTUICURI = ' . $return . PHP_EOL);
+        return $return;
+    }
+
+    public static function getAnyTLSURI(array $item)
+    {
+        $return = 'anytls://' . $item['uuid'] . '@' . $item['server'] . ':' . $item['port'] . '?sni=' . $item['server'] . '&insecure=0' . '#' . rawurlencode($item['name']);
+        return $return;
+    }
+
+    /**
+     * @param array $item
+     * @return string|null
+     * Vmess和VLESS的方法
+     */
     public static function getV2RayNURI(array $item)
     {
         $return = null;
@@ -96,15 +133,135 @@ class AppURI
                     'fp' => Tools::getRandFingerprint()
                 ];
                 $result = http_build_query($node);
-                $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . urlencode($item['remark']));
+                $return = ('vless://' . $item['id'] . '@' . $item['add'] . ':' . $item['port'] . '?' . $result . '#' . rawurlencode($item['remark']));
                 break;
             case 'ss':
-                $personal_info = $item['method'] . ':' . $item['passwd'];
-                if (!empty($item['obfs'])) {
-                    $item['plugin'] = '?plugin=obfs-local' . ';' . $item['obfs'];
-                }
-                $return = 'ss://' . Tools::base64_url_encode($personal_info) . '@' . $item['address'] . ':' . $item['port'] . rawurlencode($item['plugin']) . '#' . rawurlencode($item['remark']);
+                $return = self::getSSURI($item);
+                break;
+        }
+        return $return;
+    }
 
+    /**
+     * @param array $item
+     * @param bool $ssr_support
+     * @return array|null
+     * clash的方法
+     */
+    public static function getClashURI(array $item, bool $ssr_support = false)
+    {
+        $return = null;
+        if ($item['type'] == 'ssr' && $ssr_support === false) {
+            return $return;
+        }
+        switch ($item['type']) {
+            case 'ss':
+                $method = ['rc4-md5-6', 'camellia-128-cfb', 'camellia-192-cfb', 'camellia-256-cfb', 'bf-cfb', 'cast5-cfb', 'des-cfb', 'des-ede3-cfb', 'idea-cfb', 'rc2-cfb', 'seed-cfb', 'salsa20', 'chacha20', 'xsalsa20', 'none'];
+                if (in_array($item['method'], $method)) {
+                    // 不支持的
+                    break;
+                }
+                $return = [
+                    'name' => $item['remark'],
+                    'type' => 'ss',
+                    'server' => $item['address'],
+                    'port' => $item['port'],
+                    'cipher' => $item['method'],
+                    'password' => $item['passwd'],
+                    'udp' => true
+                ];
+                if (!empty($item['obfs'])) {
+                    $return['plugin'] = 'obfs';
+                    $return['plugin-opts']['mode'] = 'http';
+                    $obfs = explode(';', $item['obfs']);
+                    foreach ($obfs as $obf) {
+                        if (strpos($obf, 'obfs-host') !== false) {
+                            $return['plugin-opts']['host'] = explode('=', $obf)[1];
+                        } else if (strpos($obf, 'path') !== false) {
+                            $return['plugin-opts']['path'] = explode('=', $obf)[1];
+                        }
+                    }
+                }
+                break;
+            case 'tuic':
+                $return = [
+                    'name' => $item['name'],
+                    'type' => 'tuic',
+                    'server' => $item['server'],
+                    'port' => $item['port'],
+                    'uuid' => $item['uuid'],
+                    'password' => $item['password'],
+                    'skip-cert-verify' => false,
+                    'alpn' => ['h3'],
+                    'congestion-controller' => $item['congestion-controller'],
+                    'udp-relay-mode' => $item['udp-relay-mode']
+                ];
+                break;
+            case 'vmess':
+                if (!in_array($item['net'], array('ws', 'tcp'))) {
+                    break;
+                }
+                $return = [
+                    'name' => $item['remark'],
+                    'type' => 'vmess',
+                    'server' => $item['add'],
+                    'port' => $item['port'],
+                    'uuid' => $item['id'],
+                    'alterId' => $item['aid'],
+                    'cipher' => 'auto',
+                    'udp' => true
+                ];
+                if ($item['net'] == 'ws') {
+                    $return['network'] = 'ws';
+                    $return['ws-path'] = $item['path'];
+                    $return['ws-headers']['Host'] = ($item['host'] != '' ? $item['host'] : $item['add']);
+                }
+                if ($item['tls'] == 'tls') {
+                    $return['tls'] = true;
+                    $return['servername'] = $item['host'];
+                    if ($item['verify_cert'] == false) {
+                        $return['skip-cert-verify'] = true;
+                    }
+                }
+                break;
+            case 'vless':
+                if (!in_array($item['net'], array('ws', 'tcp'))) {
+                    break;
+                }
+                $return = [
+                    'name' => $item['remark'],
+                    'type' => 'vless',
+                    'server' => $item['add'],
+                    'port' => $item['port'],
+                    'uuid' => $item['id'],
+                    'alterId' => $item['aid'],
+                    'cipher' => 'auto',
+                    'udp' => true,
+                    'flow' => $item['flow']
+                ];
+                if ($item['security'] == 'tls') {
+                    $return['tls'] = true;
+                    $return['servername'] = $item['host'];
+                } else if ($item['security'] == 'reality') {
+                    $return['tls'] = true;
+                    $return['servername'] = $item['sni'];
+                    $return['client-fingerprint'] = Tools::getRandFingerprint();
+                    $return['reality-opts'] = [
+                        'public-key' => $item['pbk'],
+                        'short-id' => null
+                    ];
+                }
+                break;
+            case 'anytls':
+                $return = [
+                    'name' => $item['name'],
+                    'type' => 'anytls',
+                    'server' => $item['server'],
+                    'port' => $item['port'],
+                    'password' => $item['uuid'],
+                    'udp' => true,
+                    'sni' => $item['server']
+                ];
                 break;
         }
         return $return;
@@ -300,133 +457,6 @@ class AppURI
                     ? ', ws=true, ws-path=' . $item['path'] . ', ws-headers=host:' . $item['host']
                     : '');
                 $return = $item['remark'] . ' = vmess, ' . $item['add'] . ', ' . $item['port'] . ', username = ' . $item['id'] . $ws . $tls;
-                break;
-        }
-        return $return;
-    }
-
-    public static function getClashURI(array $item, bool $ssr_support = false)
-    {
-        $return = null;
-        if ($item['type'] == 'ssr' && $ssr_support === false) {
-            return $return;
-        }
-        switch ($item['type']) {
-            case 'ss':
-                $method = ['rc4-md5-6', 'camellia-128-cfb', 'camellia-192-cfb', 'camellia-256-cfb', 'bf-cfb', 'cast5-cfb', 'des-cfb', 'des-ede3-cfb', 'idea-cfb', 'rc2-cfb', 'seed-cfb', 'salsa20', 'chacha20', 'xsalsa20', 'none'];
-                if (in_array($item['method'], $method)) {
-                    // 不支持的
-                    break;
-                }
-                $return = [
-                    'name' => $item['remark'],
-                    'type' => 'ss',
-                    'server' => $item['address'],
-                    'port' => $item['port'],
-                    'cipher' => $item['method'],
-                    'password' => $item['passwd'],
-                    'udp' => true
-                ];
-                if (!empty($item['obfs'])) {
-                    $return['plugin'] = 'obfs';
-                    $return['plugin-opts']['mode'] = 'http';
-                    $obfs = explode(';', $item['obfs']);
-                    foreach ($obfs as $obf) {
-                        if (strpos($obf, 'obfs-host') !== false) {
-                            $return['plugin-opts']['host'] = explode('=', $obf)[1];
-                        } else if (strpos($obf, 'path') !== false) {
-                            $return['plugin-opts']['path'] = explode('=', $obf)[1];
-                        }
-                    }
-                }
-                break;
-            case 'ssr':
-                // if (
-                //     in_array($item['method'], ['rc4-md5-6', 'des-ede3-cfb', 'xsalsa20', 'none'])
-                //     ||
-                //     in_array($item['protocol'], array_merge(Config::getSupportParam('allow_none_protocol'), ['verify_deflate']))
-                //     ||
-                //     in_array($item['obfs'], ['tls1.2_ticket_fastauth'])
-                // ) {
-                //     // 不支持的
-                //     break;
-                // }
-                $return = [
-                    'name' => $item['remark'],
-                    'type' => 'ssr',
-                    'server' => $item['address'],
-                    'port' => $item['port'],
-                    'cipher' => $item['method'],
-                    'password' => $item['passwd'],
-                    'protocol' => $item['protocol'],
-                    'protocolparam' => $item['protocol_param'],
-                    'obfs' => $item['obfs'],
-                    'obfsparam' => $item['obfs_param']
-                ];
-                break;
-            case 'vmess':
-                if (!in_array($item['net'], array('ws', 'tcp'))) {
-                    break;
-                }
-                $return = [
-                    'name' => $item['remark'],
-                    'type' => 'vmess',
-                    'server' => $item['add'],
-                    'port' => $item['port'],
-                    'uuid' => $item['id'],
-                    'alterId' => $item['aid'],
-                    'cipher' => 'auto',
-                    'udp' => true
-                ];
-                if ($item['net'] == 'ws') {
-                    $return['network'] = 'ws';
-                    $return['ws-path'] = $item['path'];
-                    $return['ws-headers']['Host'] = ($item['host'] != '' ? $item['host'] : $item['add']);
-                }
-                if ($item['tls'] == 'tls') {
-                    $return['tls'] = true;
-                    $return['servername'] = $item['host'];
-                    if ($item['verify_cert'] == false) {
-                        $return['skip-cert-verify'] = true;
-                    }
-                }
-                break;
-            case 'vless':
-                if (!in_array($item['net'], array('ws', 'tcp'))) {
-                    break;
-                }
-                $return = [
-                    'name' => $item['remark'],
-                    'type' => 'vless',
-                    'server' => $item['add'],
-                    'port' => $item['port'],
-                    'uuid' => $item['id'],
-                    'alterId' => $item['aid'],
-                    'cipher' => 'auto',
-                    'udp' => true,
-                    'flow' => $item['flow']
-                ];
-                if ($item['security'] == 'tls') {
-                    $return['tls'] = true;
-                    $return['servername'] = $item['host'];
-                } else if ($item['security'] == 'reality') {
-                    $return['tls'] = true;
-                    $return['servername'] = $item['sni'];
-                    $return['client-fingerprint'] = Tools::getRandFingerprint();
-                    $return['reality-opts'] = [
-                        'public-key' => $item['pbk'],
-                        'short-id' => null
-                    ];
-                }
-                break;
-            case 'trojan':
-                $return = [
-                    'name' => $item['remark'],
-                    'type' => 'trojan',
-                    'server' => $item['address'],
-                    'port' => $item['port'],
-                    'password' => $item['passwd']
-                ];
                 break;
         }
         return $return;
